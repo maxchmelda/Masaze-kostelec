@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 
 const Objednavka = () => {
   const [jmeno, setJmeno] = useState('');
@@ -10,24 +11,30 @@ const Objednavka = () => {
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!jmeno || !telefon) {
-      alert('Vyplňte prosím jméno a telefon.');
-      return;
-    }
+  if (!jmeno || !telefon) {
+    alert('Vyplňte prosím jméno a telefon.');
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    // Simulate submission (replace with your actual logic)
-    setTimeout(() => {
-      console.log({
-        jmeno,
-        telefon,
-        email,
-        zprava,
-      });
+  const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+  const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+  const templateParams = {
+    jmeno,
+    telefon,
+    email,
+    zprava,
+  };
+
+
+
+  emailjs.send(serviceID, templateID, templateParams, publicKey)
+    .then(() => {
       setSubmitted(true);
       setLoading(false);
       alert('Formulář byl úspěšně odeslán.');
@@ -37,18 +44,21 @@ const Objednavka = () => {
       setTelefon('');
       setEmail('');
       setZprava('');
-    }, 1500);
-  };
+    }, (error) => {
+      console.error('Failed to send email:', error);
+      setLoading(false);
+      alert('Došlo k chybě při odesílání formuláře. Zkuste to prosím znovu.');
+    });
+};
 
   return (
     <section id="objednavka" className="w-full py-10 md:py-14 bg-[#242424] text-white">
-      <div className="max-w-5xl mx-auto px-4 relative">
-        <h2 className="text-2xl md:text-3xl font-semibold mb-4 md:mb-6">Objednání masáže</h2>
+      <div className="max-md:max-w-md max-w-5xl mx-auto px-4 relative">
+        <h2 className="text-2xl md:text-3xl font-semibold mb-4 md:mb-6">Objednání masáže nebo dárkového poukazu</h2>
 
         <p className="text-sm md:text-base text-white/90">
-          <strong>Udělejte první krok ke klidu a pohodě – stačí pár kliknutí!</strong>&nbsp;
-          Vyplňte formulář, my se vám ozveme, domluvíme se na termínu 
-          a pak už Vás čeká jen zasloužený relax.
+          <strong>Udělejte první krok ke klidu a pohodě – stačí pár kliknutí.</strong>&nbsp;
+          Vyplňte prosím formulář. Já se Vám ozvu a domluvíme se na termínu.
         </p>
 
         <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
@@ -62,7 +72,7 @@ const Objednavka = () => {
               type="text"
               value={jmeno}
               onChange={(e) => setJmeno(e.target.value)}
-              className="w-full rounded-2xl bg-[#404040] p-3"
+              className="w-full rounded-2xl bg-[#404040] p-3 max-sm:p-2"
               required
             />
 
@@ -75,19 +85,19 @@ const Objednavka = () => {
               type="text"
               value={telefon}
               onChange={(e) => setTelefon(e.target.value)}
-              className="w-full rounded-2xl bg-[#404040] p-3"
+              className="w-full rounded-2xl bg-[#404040] p-3 max-sm:p-2"
               required
             />
 
-            <label htmlFor="email" className="text-white">
-              E-mail
+            <label htmlFor="email" className="flex items-center gap-2 text-white mb-2">
+              <span>E-mail</span>
             </label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-2xl bg-[#404040] p-3"
+              className="w-full rounded-2xl bg-[#404040] p-3 max-sm:p-2"
             />
           </div>
 
@@ -100,14 +110,15 @@ const Objednavka = () => {
               value={zprava}
               onChange={(e) => setZprava(e.target.value)}
               rows={8}
-              className="w-full rounded-2xl bg-[#404040] p-3 resize-none h-full"
+              className="w-full rounded-2xl bg-[#404040] p-3 max-sm:p-2 resize-none h-full"
             />
           </div>
         </form>
 
         <p className="text-white/30 text-xs mt-6">
           Vámi zadané osobní údaje budeme zpracovávat my, a to pro možnost vám odpovědět.
-          Bližší informace naleznete v zásadách zpracování osobních údajů.
+          Bližší informace naleznete v&nbsp;
+          <a href="/gdpr.pdf" target="_blank" className="hover:text-white/50 underline">zásadách zpracování osobních údajů.</a>
         </p>
 
         <motion.button
@@ -115,7 +126,7 @@ const Objednavka = () => {
           disabled={loading}
           whileHover={{ scale: !loading ? 1.05 : 1 }}
           whileTap={{ scale: !loading ? 0.95 : 1 }}
-          className={`mt-6 md:mt-8 block ml-auto py-3 px-12 text-sm rounded-full transition-colors duration-200 shadow-lg ${
+          className={`mt-6 md:mt-8 block sm:ml-auto max-sm:mx-auto py-3 px-12 text-sm rounded-full transition-colors duration-200 shadow-lg ${
             loading
               ? 'bg-[#999] cursor-not-allowed'
               : 'bg-[#71645c] hover:bg-[#5a4f48] cursor-pointer'

@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-scroll";
 import { motion } from "framer-motion";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
+import { RiMenu4Line, RiCloseLine  } from "react-icons/ri";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,20 +43,22 @@ const Navbar = () => {
   const navLinks = [
     { name: "masáže", to: "masaze" },
     { name: "galerie", to: "galerie" },
-    { name: "dárkové poukazy", to: "poukazy" },
+    { name: "dárkové poukazy", to: "cenik" },
     { name: "ceník", to: "cenik" },
   ];
 
   return (
-    <nav className="w-full flex justify-between items-center px-6 lg:px-0 lg:justify-center lg:gap-[160px] relative max-w-[1800px] mx-auto">
+    <nav className="w-full flex justify-between py-4 items-center px-6 lg:px-0 lg:justify-center lg:gap-[160px] relative max-w-[1800px] mx-auto">
       {/* logo */}
-      <img src="logo-masaze.svg" alt="logo" className="h-20 lg:h-24" />
+      <a href="/" target="_self">
+        <img src="logo-masaze.png" alt="logo" className="h-12 lg:h-16" />
+      </a>
 
       {/* Desktop links */}
       <div className="hidden lg:flex justify-center items-center gap-14 font-medium">
-        {navLinks.map((link) => (
+        {navLinks.map((link, index) => (
           <Link
-            key={link.to}
+            key={index}
             className="text-black/75 hover:text-black link cursor-pointer transition-colors duration-200"
             to={link.to}
             smooth={true}
@@ -83,9 +86,9 @@ const Navbar = () => {
         aria-label="Menu"
       >
         {isOpen ? (
-          <FaTimes size={28} className="text-[#71645c]" />
+          <RiCloseLine size={28} className="text-black" />
         ) : (
-          <FaBars size={28} className="text-[#71645c]" />
+          <RiMenu4Line size={28} className="text-black" />
         )}
       </button>
 

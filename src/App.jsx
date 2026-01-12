@@ -10,6 +10,8 @@ const App = () => {
       <Galerie />
       <Cenik/>
       <Objednavka />
+      <Kontakt />
+      <Footer />
     </>
   )
 }
